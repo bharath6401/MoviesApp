@@ -99,12 +99,12 @@ class LoginForm extends Component {
   render() {
     const {showSubmitError, errorMsg} = this.state
     const jwtToken = Cookies.get('jwt_token')
-    // if (jwtToken !== undefined) {
-    //   return <Redirect to="/" />
-    // }
+    if (jwtToken !== undefined) {
+      return <Redirect to="/" />
+    }
     return (
       <div className="login-form-container">
-        <div>
+        <div className="movies-logo">
           <img
             alt="login website logo"
             src="https://res.cloudinary.com/dnjuzbuoz/image/upload/v1655456206/Group_7399_tjbtzb.png"

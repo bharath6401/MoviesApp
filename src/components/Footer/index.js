@@ -1,4 +1,5 @@
 import {FaGoogle, FaTwitter, FaInstagram, FaYoutube} from 'react-icons/fa'
+import './index.css'
 
 const Footer = () => (
   <footer className="footer d-flex flex-column align-items-center">
@@ -17,7 +18,7 @@ const Footer = () => (
       </div>
     </div>
     <div>
-      <p>Contact Us</p>
+      <p>Contact us</p>
     </div>
   </footer>
 )

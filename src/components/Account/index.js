@@ -20,7 +20,7 @@ const Account = props => {
   return (
     <div className="Account-background-color">
       <Header />
-      <div className="account">
+      <div className="account-details-container">
         <h1>Account</h1>
         <hr />
         <div className="d-flex flex-row">

@@ -34,11 +34,8 @@ class Home extends Component {
   }
 
   callTrendingApi = async () => {
-    this.setState({
-      ApiTrendingNowStatus: apiStatusConstants.inProgress,
-    })
     const jwtToken = Cookies.get('jwt_token')
-    console.log(jwtToken)
+
     const apiUrl = 'https://apis.ccbp.in/movies-app/trending-movies'
     const options = {
       headers: {
@@ -46,21 +43,24 @@ class Home extends Component {
       },
       method: 'GET',
     }
+    this.setState({
+      ApiTrendingNowStatus: apiStatusConstants.inProgress,
+    })
 
     const response = await fetch(apiUrl, options)
     if (response.ok === true) {
       const fetchedData = await response.json()
-      console.log(fetchedData, 'trending movies')
+      //   console.log(fetchedData, 'trending movies')
       const {results} = await fetchedData
 
-      const CamelCaseTrendingMovies = results.map(eachMovie => ({
+      const CamelCaseTrendingMovies = await results.map(eachMovie => ({
         backdropPath: eachMovie.backdrop_path,
         id: eachMovie.id,
         overview: eachMovie.overview,
         posterPath: eachMovie.poster_path,
         title: eachMovie.title,
       }))
-      this.setState({
+      await this.setState({
         ApiTrendingNowStatus: apiStatusConstants.success,
         trndingMoviesList: [...CamelCaseTrendingMovies],
       })
@@ -69,9 +69,9 @@ class Home extends Component {
     }
   }
 
-  TrendingNowSucessView = () => {
-    const {trndingMoviesList} = this.state
-  }
+  //   TrendingNowSucessView = () => {
+  //     const {trndingMoviesList} = this.state
+  //   }
 
   callHomeApi = async () => {
     this.setState({
@@ -79,7 +79,7 @@ class Home extends Component {
       ApiPosterStatus: apiStatusConstants.inProgress,
     })
     const jwtToken = Cookies.get('jwt_token')
-    console.log(jwtToken)
+    // console.log(jwtToken)
 
     const apiUrl = 'https://apis.ccbp.in/movies-app/originals'
     const options = {
@@ -95,23 +95,23 @@ class Home extends Component {
       const {results} = await fetchedData
       const randomNum = Math.floor(Math.random(0, 1) * 10)
 
-      console.log(fetchedData, randomNum)
-      const randomMovieOfOriginals = results[randomNum]
-      const camelRandomMovieOfOriginals = {
+      //   console.log(fetchedData, randomNum)
+      const randomMovieOfOriginals = await results[randomNum]
+      const camelRandomMovieOfOriginals = await {
         backdropPath: randomMovieOfOriginals.backdrop_path,
         id: randomMovieOfOriginals.id,
         overview: randomMovieOfOriginals.overview,
         posterPath: randomMovieOfOriginals.poster_path,
         title: randomMovieOfOriginals.title,
       }
-      const CamelOriginalMoviesList = results.map(eachMovie => ({
+      const CamelOriginalMoviesList = await results.map(eachMovie => ({
         backdropPath: eachMovie.backdrop_path,
         id: eachMovie.id,
         overview: eachMovie.overview,
         posterPath: eachMovie.poster_path,
         title: eachMovie.title,
       }))
-      this.setState({
+      await this.setState({
         RandomMovieOfOriginals: {...camelRandomMovieOfOriginals},
         ApiPosterStatus: apiStatusConstants.success,
         originalMoviesList: [...CamelOriginalMoviesList],

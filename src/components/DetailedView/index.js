@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import {BiError} from 'react-icons/bi'
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 import Header from '../Header'
 import Footer from '../Footer'
 import './index.css'
@@ -165,11 +166,13 @@ class DetailedView extends Component {
           <ul className="d-flex flex-row col-12 similar-movies-list-items">
             {similarMovies.map(eachMovie => (
               <li className="col-4 p-1">
-                <img
-                  alt={eachMovie.title}
-                  className="similar-movie-item col-12"
-                  src={eachMovie.poster_path}
-                />
+                <Link to={`/movies/${eachMovie.id}`}>
+                  <img
+                    alt={eachMovie.title}
+                    className="similar-movie-item col-12"
+                    src={eachMovie.poster_path}
+                  />
+                </Link>
               </li>
             ))}
           </ul>
