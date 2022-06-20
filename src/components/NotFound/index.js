@@ -1,5 +1,9 @@
-const NotFound = () => {
+const NotFound = props => {
   const num = 0
+  const goHome = () => {
+    const {history} = props
+    history.replace('/')
+  }
 
   return (
     <div className="not-found-background">
@@ -10,7 +14,9 @@ const NotFound = () => {
           we are sorry the page you requested could not be found Please go back
           to the homepage.
         </p>
-        <button className="home-button">Go To Home</button>
+        <button onClick={goHome} className="home-button">
+          Go To Home
+        </button>
       </div>
     </div>
   )

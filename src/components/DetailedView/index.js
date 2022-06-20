@@ -110,7 +110,7 @@ class DetailedView extends Component {
     } = movieDetails
 
     return (
-      <div className="">
+      <div className="" testid="movieItem">
         <div
           style={{
             backgroundSize: 'cover',
@@ -203,7 +203,9 @@ class DetailedView extends Component {
     return (
       <div className="bg-color-black">
         <Header />
-        <div className="bg-color-black">{this.getPosterViews()}</div>
+        <div className="bg-color-black" testid="movieItem">
+          {this.getPosterViews()}
+        </div>
       </div>
     )
   }

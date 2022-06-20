@@ -10,6 +10,9 @@
   background-color: #0d0d0d;
   padding: 40px;
 }
+.p-4{
+    padding:40px;
+}
 .banner-title {
   font-size: 3rem;
   font-weight: 800;

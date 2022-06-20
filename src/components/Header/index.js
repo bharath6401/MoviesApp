@@ -1,4 +1,4 @@
-import {BiSearchAlt2} from 'react-icons/bi'
+import {HiOutlineSearch} from 'react-icons/hi'
 import {Link} from 'react-router-dom'
 
 import './index.css'
@@ -15,7 +15,7 @@ const Header = props => {
   }
 
   return (
-    <div className="header col-12">
+    <div className="header col-12" testid="header">
       <ul className="header-list-items d-flex flex-row justify-content-space-between">
         <li className="d-flex flex-row color-w">
           <Link to="/">
@@ -47,14 +47,18 @@ const Header = props => {
                   className="button"
                   alt="searchButton"
                 >
-                  <BiSearchAlt2 />
+                  <HiOutlineSearch />
                 </button>
               </div>
             )}
             {search !== 'true' && (
               <Link to="/search">
-                <button className="search-button" alt="searchButton">
-                  <BiSearchAlt2 />
+                <button
+                  testid="searchButton"
+                  className="search-button"
+                  alt="searchButton"
+                >
+                  <HiOutlineSearch />
                 </button>
               </Link>
             )}
