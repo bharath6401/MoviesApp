@@ -55,16 +55,16 @@ class Home extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok === true) {
       const fetchedData = await response.json()
-      const {results} = await fetchedData
+      const {results} = fetchedData
 
-      const CamelOriginalMoviesList = await results.map(eachMovie => ({
+      const CamelOriginalMoviesList = results.map(eachMovie => ({
         backdropPath: eachMovie.backdrop_path,
         id: eachMovie.id,
         overview: eachMovie.overview,
         posterPath: eachMovie.poster_path,
         title: eachMovie.title,
       }))
-      await this.setState({
+      this.setState({
         ApiPosterStatus: apiStatusConstants.success,
         originalMoviesList: [...CamelOriginalMoviesList],
       })
@@ -111,21 +111,21 @@ class Home extends Component {
 
     //   console.log(fetchedData, randomNum)
     const randomMovieOfOriginals = originalMoviesList[randomNum]
-    const camelRandomMovieOfOriginals = {
-      backdropPath: randomMovieOfOriginals.backdrop_path,
-      id: randomMovieOfOriginals.id,
-      overview: randomMovieOfOriginals.overview,
-      posterPath: randomMovieOfOriginals.poster_path,
-      title: randomMovieOfOriginals.title,
-    }
+    // const camelRandomMovieOfOriginals = {
+    //   backdropPath: randomMovieOfOriginals.backdrop_path,
+    //   id: randomMovieOfOriginals.id,
+    //   overview: randomMovieOfOriginals.overview,
+    //   posterPath: randomMovieOfOriginals.poster_path,
+    //   title: randomMovieOfOriginals.title,
+    // }
     const {
       backdropPath,
       id,
       overview,
       posterPath,
       title,
-    } = camelRandomMovieOfOriginals
-
+    } = randomMovieOfOriginals
+    // conso
     return (
       <div className="home-container">
         <div

@@ -45,16 +45,16 @@ class Trending extends Component {
     if (response.ok === true) {
       const fetchedData = await response.json()
       //   console.log(fetchedData, 'trending movies')
-      const {results} = await fetchedData
+      const {results} = fetchedData
 
-      const CamelCaseTrendingMovies = await results.map(eachMovie => ({
+      const CamelCaseTrendingMovies = results.map(eachMovie => ({
         backdropPath: eachMovie.backdrop_path,
         id: eachMovie.id,
         overview: eachMovie.overview,
         posterPath: eachMovie.poster_path,
         title: eachMovie.title,
       }))
-      await this.setState({
+      this.setState({
         ApiTrendingNowStatus: apiStatusConstants.success,
         trndingMoviesList: [...CamelCaseTrendingMovies],
       })
@@ -87,8 +87,8 @@ class Trending extends Component {
       <div className="movie-item-container" testid="trending">
         <Slider {...settings}>
           {movies.map(eachMovie => (
-            <Link to={`/movies/${eachMovie.id}`}>
-              <div id={eachMovie.id} className="ml-1 p-1">
+            <Link key={eachMovie.title} to={`/movies/${eachMovie.id}`}>
+              <div  id={eachMovie.id} className="ml-1 p-1">
                 <img
                   alt={eachMovie.title}
                   className="col-12"

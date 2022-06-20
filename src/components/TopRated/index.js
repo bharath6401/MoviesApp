@@ -87,7 +87,7 @@ class TopRated extends Component {
       <div className="movie-item-container">
         <Slider {...settings}>
           {movies.map(eachMovie => (
-            <Link to={`/movies/${eachMovie.id}`}>
+            <Link key={eachMovie.title} to={`/movies/${eachMovie.id}`}>
               <div id={eachMovie.id} className="ml-1 p-1">
                 <img
                   alt={eachMovie.title}
