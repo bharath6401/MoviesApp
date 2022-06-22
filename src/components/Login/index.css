@@ -1,51 +1,54 @@
 .login-form-container {
   display: flex;
-  background-image: url(https://res.cloudinary.com/dnjuzbuoz/image/upload/v1655199752/netfilx_1_f9blsx.png);
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #e5e5e5;
+  background-size: cover;
   height: 100vh;
-  width: 100%;
-  max-width: 1110px;
   margin: auto;
-}
-.form-container {
-  background: #0c0b10;
-  color: white;
-  opacity: 0.8;
-  border-radius: 8px;
-}
-.movies-logo {
-  position: absolute;
-  top: 40px;
-  left: 40px;
 }
 
 @media screen and (min-width: 992px) {
   .login-form-container {
-    flex-direction: row;
     justify-content: space-around;
+    background-image: url('https://res.cloudinary.com/dtjcxf7z5/image/upload/v1650191860/Mini%20Project%20Netflix%20Clone/loginPageBg_q2deus.png');
   }
 }
 
-.login-website-logo-mobile-image {
+.login-website-logo-mobile-img {
   width: 165px;
   margin-top: 50px;
   margin-bottom: 35px;
 }
 
 @media screen and (min-width: 992px) {
-  .login-website-logo-mobile-image {
+  .login-website-logo-mobile-img {
     display: none;
   }
 }
 
-.login-image {
+.login-heading {
+  font-family: 'HK Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+  color: #ffffff;
+  margin: 0px;
+}
+
+@media screen and (min-width: 992px) {
+  .login-heading {
+    font-size: 32px;
+  }
+}
+
+.login-img {
   width: 278px;
 }
 
 @media screen and (min-width: 992px) {
-  .login-image {
+  .login-img {
     width: 60%;
     max-width: 524px;
     flex-shrink: 1;
@@ -53,12 +56,12 @@
   }
 }
 
-.login-website-logo-desktop-image {
+.login-website-logo-desktop-img {
   width: 185px;
 }
 
 @media screen and (max-width: 991px) {
-  .login-website-logo-desktop-image {
+  .login-website-logo-desktop-img {
     display: none;
   }
 }
@@ -71,6 +74,9 @@
   border-radius: 8px;
   width: 100%;
   max-width: 350px;
+  background: #0c0b10;
+  opacity: 0.8;
+  border-radius: 8px;
 }
 
 @media screen and (min-width: 992px) {
@@ -91,48 +97,60 @@
 
 .input-label {
   margin-bottom: 0px;
-  font-family: 'Roboto';
-  font-weight: bold;
+  font-family: 'HK Grotesk';
+  font-style: normal;
+  font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  color: white;
+  /* identical to box height, or 133% */
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 .username-input-field {
   font-size: 14px;
   height: 40px;
   border: 1px solid #d7dfe9;
-  background-color: rgba(83, 80, 80, 0.534);
-  color: white;
+  color: #e2e8f0;
+  font-family: 'HK Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
   border-radius: 2px;
   margin-top: 5px;
   padding: 8px 16px 8px 16px;
+  outline: none;
+  background: #333333;
 }
 
 .password-input-field {
   font-size: 14px;
   height: 40px;
   border: 1px solid #d7dfe9;
-  background-color: rgba(83, 80, 80, 0.534);
-  color: white;
+  background-color: #333333;
+  color: #e2e8f0;
   border-radius: 2px;
   margin-top: 5px;
   padding: 8px 16px 8px 16px;
+  outline: none;
 }
 
 .login-button {
   font-family: 'Roboto';
   font-weight: bold;
   font-size: 14px;
-  color: #a19090;
+  color: #ffffff;
   height: 40px;
   width: 100%;
   margin-top: 20px;
   margin-bottom: 2px;
-  background-color: red;
+  background-color: #e50914;
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  outline: none;
 }
 
 .error-message {
@@ -145,6 +163,9 @@
   line-height: 16px;
   color: #ff0b37;
 }
-label {
+.watermark {
   color: white;
+  font-size: 24px;
+  font-family: Garamond;
+  font-style: italic;
 }

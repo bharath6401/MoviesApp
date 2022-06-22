@@ -135,6 +135,11 @@ class Search extends Component {
         <div className="search-header">
           <Header SearchFun={this.SearchFun} search="true" />
         </div>
+        <Link>
+          <h1>Home</h1>
+        </Link>
+
+
         <div>{this.getSearchViews()}</div>
       </div>
     )

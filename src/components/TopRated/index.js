@@ -1,130 +1,170 @@
-import React, {Component} from 'react'
+import {Component} from 'react'
+
 import Slider from 'react-slick'
 import {Link} from 'react-router-dom'
-import {BiError} from 'react-icons/bi'
 
 import Cookies from 'js-cookie'
+import LoadingElement from '../LoaderElement'
 
-import Loader from 'react-loader-spinner'
+import MovieContext from '../../context/MovieContext'
 
-import './index.css'
-
-const apiStatusConstants = {
+const apiConstants = {
   initial: 'INITIAL',
+  inProgress: 'INPROGRESS',
   success: 'SUCCESS',
   failure: 'FAILURE',
-  inProgress: 'IN_PROGRESS',
 }
 
 class TopRated extends Component {
   state = {
-    apiStatus: apiStatusConstants.initial,
-    ApiTrendingNowStatus: apiStatusConstants.initial,
-    trndingMoviesList: [],
+    apiStatus: apiConstants.initial,
+    allTopRatedItemVideos: [],
   }
 
   componentDidMount() {
-    this.callTrendingApi()
+    this.getTopRatedItemVideos()
   }
 
-  callTrendingApi = async () => {
-    const jwtToken = Cookies.get('jwt_token')
+  getTopRatedItemVideos = async () => {
+    this.setState({apiStatus: apiConstants.inProgress})
 
-    const apiUrl = 'https://apis.ccbp.in/movies-app/top-rated-movies'
+    const url = 'https://apis.ccbp.in/movies-app/top-rated-movies'
+    const jwtToken = Cookies.get('jwt_token')
     const options = {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-      method: 'GET',
     }
-    this.setState({
-      ApiTrendingNowStatus: apiStatusConstants.inProgress,
-    })
 
-    const response = await fetch(apiUrl, options)
-    if (response.ok === true) {
-      const fetchedData = await response.json()
-      //   console.log(fetchedData, 'trending movies')
-      const {results} = await fetchedData
+    const response = await fetch(url, options)
+    if (response.ok) {
+      const data = await response.json()
 
-      const CamelCaseTrendingMovies = await results.map(eachMovie => ({
-        backdropPath: eachMovie.backdrop_path,
-        id: eachMovie.id,
-        overview: eachMovie.overview,
-        posterPath: eachMovie.poster_path,
-        title: eachMovie.title,
+      const updatedVideosList = data.results.map(each => ({
+        id: each.id,
+        backdropPath: each.backdrop_path,
+        overview: each.overview,
+        posterPath: each.poster_path,
+        title: each.title,
       }))
-      await this.setState({
-        ApiTrendingNowStatus: apiStatusConstants.success,
-        trndingMoviesList: [...CamelCaseTrendingMovies],
+
+      this.setState({
+        apiStatus: apiConstants.success,
+        allTopRatedItemVideos: updatedVideosList,
       })
     } else {
-      this.setState({ApiTrendingNowStatus: apiStatusConstants.failure})
-    }
-  }
-
-  TrendingFailureView = () => {
-    const {ApiPosterStatus} = this.state
-    return (
-      <div className=" p-4 d-flex flex-column align-items-center justify-content-center col-12">
-        <BiError />
-        <p>Something went wrong. Please try again</p>
-        <button onClick={this.callApi} className="try-again">
-          Try Again
-        </button>
-      </div>
-    )
-  }
-
-  PosterSlickSucessView = movies => {
-    // const {originalMoviesList} = movies
-    const settings = {
-      slidesToShow: 4,
-      slidesToScroll: 1,
-      dots: true,
-    }
-    return (
-      <div className="movie-item-container">
-        <Slider {...settings}>
-          {movies.map(eachMovie => (
-            <Link key={eachMovie.title} to={`/movies/${eachMovie.id}`}>
-              <div id={eachMovie.id} className="ml-1 p-1">
-                <img
-                  alt={eachMovie.title}
-                  className="col-12"
-                  src={eachMovie.posterPath}
-                />
-              </div>
-            </Link>
-          ))}
-        </Slider>
-      </div>
-    )
-  }
-
-  trendingLoadingView = () => (
-    <div className="products-loader-container" testid="loader">
-      <Loader type="ThreeDots" color="#0b69ff" height="50" width="50" />
-    </div>
-  )
-
-  getTrendingNowViews = () => {
-    const {ApiTrendingNowStatus, trndingMoviesList} = this.state
-    console.log(ApiTrendingNowStatus)
-    switch (ApiTrendingNowStatus) {
-      case apiStatusConstants.success:
-        return this.PosterSlickSucessView(trndingMoviesList)
-      case apiStatusConstants.failure:
-        return this.TrendingFailureView()
-      case apiStatusConstants.inProgress:
-        return this.trendingLoadingView()
-      default:
-        return null
+      this.setState({apiStatus: apiConstants.failure})
     }
   }
 
   render() {
-    return <div className="bg-color-black">{this.getTrendingNowViews()}</div>
+    return (
+      <MovieContext.Consumer>
+        {value => {
+          const {username} = value
+          console.log('username from originals', {username})
+
+          const renderLoader = () => <LoadingElement />
+
+          const renderSuccessView = () => {
+            const {allTopRatedItemVideos} = this.state
+
+            const settings = {
+              dots: false,
+              infinite: false,
+              speed: 500,
+              slidesToShow: 4,
+              slidesToScroll: 1,
+              responsive: [
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                  },
+                },
+                {
+                  breakpoint: 600,
+                  settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                  },
+                },
+                {
+                  breakpoint: 480,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                  },
+                },
+              ],
+            }
+
+            return (
+              <ul>
+                <Slider {...settings} className="slick-container">
+                  {allTopRatedItemVideos.map(each => (
+                    <div className="slick-item" key={each.id}>
+                      <li key={each.id}>
+                        <Link to={`/movies/${each.id}`}>
+                          <img
+                            src={each.posterPath}
+                            alt={each.title}
+                            className="logo-image"
+                          />
+                        </Link>
+                      </li>
+                    </div>
+                  ))}
+                </Slider>
+              </ul>
+            )
+          }
+
+          const renderMovieItem = () => {
+            this.getTopRatedItemVideos()
+          }
+
+          const renderFailureView = () => (
+            <div className="failure-view-container">
+              <img
+                alt="failure view"
+                src="https://res.cloudinary.com/dtjcxf7z5/image/upload/v1650297174/Mini%20Project%20Netflix%20Clone/Background-Complete_t8c6zl.png"
+                className="failure-image"
+              />
+              <p className="search-content">
+                Something went wrong. Please try again
+              </p>
+
+              <button
+                type="button"
+                className="try-again-button"
+                onClick={renderMovieItem}
+              >
+                Try again
+              </button>
+            </div>
+          )
+
+          const getResult = () => {
+            const {apiStatus} = this.state
+            switch (apiStatus) {
+              case apiConstants.success:
+                return renderSuccessView()
+              case apiConstants.failure:
+                return renderFailureView()
+              case apiConstants.inProgress:
+                return renderLoader()
+              default:
+                return null
+            }
+          }
+
+          return <div testid="toprated">{getResult()}</div>
+        }}
+      </MovieContext.Consumer>
+    )
   }
 }
 

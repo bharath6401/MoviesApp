@@ -1,51 +1,60 @@
-import Cookies from 'js-cookie'
-import {withRouter} from 'react-router-dom'
-import Loader from 'react-loader-spinner'
-
-import Footer from '../Footer'
+import MovieContext from '../../context/MovieContext'
 import Header from '../Header'
+import Footer from '../Footer'
+
 import './index.css'
 
-const Account = props => {
-  const num = 0
+const Account = props => (
+  <MovieContext.Consumer>
+    {value => {
+      const {username, password, triggerLogout} = value
 
-  const logout = () => {
-    Cookies.remove('jwt_token')
-    const {history} = props
-    history.replace('/login')
-  }
+      const onClickLogout = () => {
+        triggerLogout(props)
+      }
 
-  const username = Cookies.get('username')
+      const hiddenPassword = '*'.repeat(password.length)
 
-  return (
-    <div className="Account-background-color">
-      <Header />
-      <div className="account-details-container">
-        <h1>Account</h1>
-        <hr />
-        <div className="d-flex flex-row">
-          <p className="account-membership">Member ship</p>
-          <div className="d-flex flex-column ml-1">
-            <p className="">{username}@gmail.com</p>
-            <div className="d-flex flex-row">
-              <p>Password</p>
-              <p>********</p>
+      return (
+        <>
+          <div className="account-container" testid="account">
+            <Header />
+            <div className="account-container-2">
+              <h1>
+                Account
+                <hr />
+              </h1>
+
+              <div className="account-element">
+                <p className="header-element">Member ship</p>
+                <div>
+                  <p>{username}@gmail.com</p>
+                  <p>Password: {hiddenPassword} </p>
+                </div>
+              </div>
+              <hr />
+
+              <div className="account-element">
+                <p className="header-element">Plan Details</p>
+                <div>
+                  <p>Premium</p>
+                  <p className="ultra-hd">Ultra HD</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="logout-button"
+                onClick={onClickLogout}
+              >
+                Logout
+              </button>
             </div>
+
+            <Footer />
           </div>
-        </div>
-        <hr />
-        <div className="d-flex flex-row">
-          <p className="account-membership">Plan details</p>
-          <div className="d-flex flex-row ml-1">
-            <p>Premium</p>
-            <p>Ultra HD</p>
-          </div>
-        </div>
-        <hr />
-        <button onClick={logout}>Logout</button>
-      </div>
-      <Footer />
-    </div>
-  )
-}
-export default withRouter(Account)
+        </>
+      )
+    }}
+  </MovieContext.Consumer>
+)
+export default Account

@@ -1,184 +1,159 @@
-import React, {Component} from 'react'
-import Slider from 'react-slick'
-import {Link} from 'react-router-dom'
-import {BiError} from 'react-icons/bi'
-
+import {Component} from 'react'
 import Cookies from 'js-cookie'
-
-import Loader from 'react-loader-spinner'
-
-import Footer from '../Footer'
 import Header from '../Header'
 import Trending from '../Trending'
+
+import './index.css'
+import MovieContext from '../../context/MovieContext'
+import Footer from '../Footer'
+import LoadingElement from '../LoaderElement'
 import Originals from '../Originals'
 import TopRated from '../TopRated'
 
-import './index.css'
-
-const apiStatusConstants = {
+const apiConstants = {
   initial: 'INITIAL',
+  inProgress: 'INPROGRESS',
   success: 'SUCCESS',
   failure: 'FAILURE',
-  inProgress: 'IN_PROGRESS',
 }
 
 class Home extends Component {
   state = {
-    apiStatus: apiStatusConstants.initial,
-    RandomMovieOfOriginals: [],
-    ApiPosterStatus: apiStatusConstants.initial,
-
-    trndingMoviesList: [],
+    apiStatus: apiConstants.initial,
+    allTrendingVideos: [],
   }
 
   componentDidMount() {
-    this.callHomeApi()
+    this.getAllVideos()
   }
 
-  callHomeApi = async () => {
-    this.setState({
-      apiStatus: apiStatusConstants.inProgress,
-      ApiPosterStatus: apiStatusConstants.inProgress,
-      originalMoviesList: [],
-    })
-    const jwtToken = Cookies.get('jwt_token')
-    // console.log(jwtToken)
+  getAllVideos = async () => {
+    this.setState({apiStatus: apiConstants.inProgress})
 
-    const apiUrl = 'https://apis.ccbp.in/movies-app/originals'
+    const url = 'https://apis.ccbp.in/movies-app/originals'
+    const jwtToken = Cookies.get('jwt_token')
     const options = {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
-      method: 'GET',
     }
 
-    const response = await fetch(apiUrl, options)
-    if (response.ok === true) {
-      const fetchedData = await response.json()
-      const {results} = fetchedData
+    const response = await fetch(url, options)
+    if (response.ok) {
+      const data = await response.json()
 
-      const CamelOriginalMoviesList = results.map(eachMovie => ({
-        backdropPath: eachMovie.backdrop_path,
-        id: eachMovie.id,
-        overview: eachMovie.overview,
-        posterPath: eachMovie.poster_path,
-        title: eachMovie.title,
+      const updatedVideosList = data.results.map(each => ({
+        id: each.id,
+        backdropPath: each.backdrop_path,
+        overview: each.overview,
+        posterPath: each.poster_path,
+        title: each.title,
       }))
+
       this.setState({
-        ApiPosterStatus: apiStatusConstants.success,
-        originalMoviesList: [...CamelOriginalMoviesList],
+        apiStatus: apiConstants.success,
+        allTrendingVideos: updatedVideosList,
       })
     } else {
-      this.setState({ApiPosterStatus: apiStatusConstants.failure})
+      this.setState({apiStatus: apiConstants.failure})
     }
   }
 
-  //   HomePageSucessView = () => {
+  render() {
+    const renderSuccessView = () => {
+      const {allTrendingVideos} = this.state
 
-  //   }
+      const homeHeaderItem =
+        allTrendingVideos[Math.floor(Math.random() * allTrendingVideos.length)]
 
-  getPosterViews = () => {
-    const {ApiPosterStatus} = this.state
-    console.log(ApiPosterStatus)
-    switch (ApiPosterStatus) {
-      case apiStatusConstants.success:
-        return this.PosterSucessView()
-      case apiStatusConstants.failure:
-        return this.PosterFailureView()
-      case apiStatusConstants.inProgress:
-        return this.HomePageLoadingView()
-      default:
-        return null
+      const backgroundImage = homeHeaderItem.backdropPath
+      const titleOfHeader = homeHeaderItem.title
+      const overviewOfHeader = homeHeaderItem.overview
+
+      return (
+        <div
+          className="spiderman-container"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          <Header />
+          <div className="home-header-content">
+            <h1 className="movie-details-name">{titleOfHeader}</h1>
+            <p className="movie-details-description">{overviewOfHeader}</p>
+            <button type="button" className="movies-details-play-button">
+              Play
+            </button>
+          </div>
+        </div>
+      )
     }
-  }
 
-  PosterFailureView = () => {
-    const {ApiPosterStatus} = this.state
-    return (
-      <div className=" p-4 d-flex flex-column align-items-center justify-content-center col-12">
-        <BiError />
-        <p>Something went wrong. Please try again</p>
-        <button onClick={this.callHomeApi} className="try-again">
-          Try Again
+    const renderMovieItem = () => {
+      this.getAllVideos()
+    }
+
+    const renderLoader = () => <LoadingElement />
+
+    const renderFailureView = () => (
+      <div className="failure-view-container">
+        <img
+          alt="failure view"
+          src="https://res.cloudinary.com/dtjcxf7z5/image/upload/v1650297174/Mini%20Project%20Netflix%20Clone/Background-Complete_t8c6zl.png"
+          className="failure-image"
+        />
+        <p className="search-content">Something went wrong. Please try again</p>
+
+        <button
+          type="button"
+          className="try-again-button"
+          onClick={renderMovieItem}
+        >
+          Try again
         </button>
       </div>
     )
-  }
 
-  PosterSucessView = () => {
-    const {originalMoviesList} = this.state
-    const randomNum = Math.floor(Math.random(0, 1) * 10)
+    const getResult = () => {
+      const {apiStatus} = this.state
+      switch (apiStatus) {
+        case apiConstants.success:
+          return renderSuccessView()
+        case apiConstants.failure:
+          return renderFailureView()
+        case apiConstants.inProgress:
+          return renderLoader()
+        default:
+          return null
+      }
+    }
 
-    //   console.log(fetchedData, randomNum)
-    const randomMovieOfOriginals = originalMoviesList[randomNum]
-    // const camelRandomMovieOfOriginals = {
-    //   backdropPath: randomMovieOfOriginals.backdrop_path,
-    //   id: randomMovieOfOriginals.id,
-    //   overview: randomMovieOfOriginals.overview,
-    //   posterPath: randomMovieOfOriginals.poster_path,
-    //   title: randomMovieOfOriginals.title,
-    // }
-    const {
-      backdropPath,
-      id,
-      overview,
-      posterPath,
-      title,
-    } = randomMovieOfOriginals
-    // conso
     return (
-      <div className="home-container">
-        <div
-          style={{
-            backgroundSize: 'cover',
-            top: '0px',
-            backgroundImage: `url("${backdropPath}")`,
-          }}
-          className="col-12 banner"
-        >
-          <Header />
-          {/* <img className="col-12" src={`${backdropPath}`} /> */}
-          <h1 className="banner-title ml-2">{title}</h1>
-          <p className="banner-description ml-2">
-            {this.truncateString(overview, 100)}
-          </p>
-          <button className="play-button ml-2">Play</button>
-        </div>
-        {/* <div className="title-overview col-12">
-          
-        </div> */}
-      </div>
-    )
-  }
+      <MovieContext.Consumer>
+        {value => {
+          const {username} = value
+          console.log('username from Home', {username})
 
-  truncateString = (string = '', maxLength = 50) =>
-    string.length > maxLength ? `${string.substring(0, maxLength)}…` : string
-  // demo the above function
-
-  HomePageLoadingView = () => (
-    <div className="products-loader-container" testid="loader">
-      <Loader type="ThreeDots" color="#0b69ff" height="50" width="50" />
-    </div>
-  )
-
-  render() {
-    const {apiStatus} = this.state
-    console.log(apiStatus)
-    return (
-      <>
-        <div className="bg-color-black" testid="home">
-          {this.getPosterViews()}
-          <h1 className="trending-heading">Trending Now</h1>
-          <Trending />
-          <h1 className="trending-heading">Top Rated</h1>
-          <TopRated />
-          <h1 className="trending-heading">Originals</h1>
-          <Originals />
-          <Footer />
-        </div>
-      </>
+          return (
+            <>
+              <div className="home-container" testid="home">
+                {getResult()}
+                <h1 className="trending-heading">Trending Now</h1>
+                <Trending />
+                <h1 className="trending-heading">Top Rated</h1>
+                <TopRated />
+                <h1 className="trending-heading">Originals</h1>
+                <Originals />
+              </div>
+              <Footer />
+            </>
+          )
+        }}
+      </MovieContext.Consumer>
     )
   }
 }
-
 export default Home

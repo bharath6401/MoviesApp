@@ -4,25 +4,23 @@ import Header from '../Header'
 import MovieContext from '../../context/MovieContext'
 import Footer from '../Footer'
 // import LoadingElement from '../LoaderElement'
-import PopularItem from '../PopularItem'
+import MovieItem from '../MovieItem'
 
-class Popular extends Component {
-  //   state = {searchInput: ''}
-
+class MovieItemDetails extends Component {
   render() {
     return (
       <MovieContext.Consumer>
         {value => {
           const {username} = value
-          console.log('username from Home', {username})
+          console.log('username from movieItemDetails', {username})
 
           return (
             <>
-              <div className="home-container" testid="popular">
+              <div className="home-container">
                 <Header />
-                <PopularItem />
-                <Footer />
+                <MovieItem />
               </div>
+              <Footer />
             </>
           )
         }}
@@ -30,5 +28,4 @@ class Popular extends Component {
     )
   }
 }
-
-export default Popular
+export default MovieItemDetails

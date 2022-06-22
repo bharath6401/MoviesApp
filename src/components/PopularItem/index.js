@@ -1,13 +1,11 @@
 import {Component} from 'react'
 
-import Slider from 'react-slick'
 import {Link} from 'react-router-dom'
 
 import Cookies from 'js-cookie'
 import LoadingElement from '../LoaderElement'
 
 import MovieContext from '../../context/MovieContext'
-
 import './index.css'
 
 const apiConstants = {
@@ -17,28 +15,28 @@ const apiConstants = {
   failure: 'FAILURE',
 }
 
-class Trending extends Component {
+class PopularItem extends Component {
   state = {
     apiStatus: apiConstants.initial,
-    allTrendingVideos: [],
+    allPopularVideos: [],
   }
 
   componentDidMount() {
-    this.getAllVideos()
+    this.getPopularItemVideos()
   }
 
-  getAllVideos = async () => {
+  getPopularItemVideos = async () => {
     this.setState({apiStatus: apiConstants.inProgress})
 
-    const url = 'https://apis.ccbp.in/movies-app/trending-movies'
+    const url = 'https://apis.ccbp.in/movies-app/popular-movies'
     const jwtToken = Cookies.get('jwt_token')
     const options = {
       method: 'GET',
+
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     }
-
     const response = await fetch(url, options)
     if (response.ok) {
       const data = await response.json()
@@ -46,14 +44,14 @@ class Trending extends Component {
       const updatedVideosList = data.results.map(each => ({
         id: each.id,
         backdropPath: each.backdrop_path,
-        overview: each.overview,
+        overview: each.overView,
         posterPath: each.poster_path,
         title: each.title,
       }))
 
       this.setState({
         apiStatus: apiConstants.success,
-        allTrendingVideos: updatedVideosList,
+        allPopularVideos: updatedVideosList,
       })
     } else {
       this.setState({apiStatus: apiConstants.failure})
@@ -65,67 +63,34 @@ class Trending extends Component {
       <MovieContext.Consumer>
         {value => {
           const {username} = value
-          console.log('username from trending', {username})
+          console.log('username from popular', {username})
 
           const renderLoader = () => <LoadingElement />
 
           const renderSuccessView = () => {
-            const {allTrendingVideos} = this.state
-
-            const settings = {
-              dots: false,
-              infinite: false,
-              speed: 500,
-              slidesToShow: 4,
-              slidesToScroll: 1,
-              responsive: [
-                {
-                  breakpoint: 1024,
-                  settings: {
-                    slidesToShow: 4,
-                    slidesToScroll: 1,
-                  },
-                },
-                {
-                  breakpoint: 600,
-                  settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 1,
-                  },
-                },
-                {
-                  breakpoint: 480,
-                  settings: {
-                    slidesToShow: 2,
-                    slidesToScroll: 1,
-                  },
-                },
-              ],
-            }
+            const {allPopularVideos} = this.state
 
             return (
-              <ul>
-                <Slider {...settings} className="slick-container">
-                  {allTrendingVideos.map(each => (
-                    <div className="slick-item" key={each.id}>
-                      <li key={each.id}>
-                        <Link to={`/movies/${each.id}`} key={each.id}>
-                          <img
-                            src={each.posterPath}
-                            alt={each.title}
-                            className="logo-image"
-                          />
-                        </Link>
-                      </li>
-                    </div>
+              <div className="popular-video-list-container">
+                <ul className="popular-video-list">
+                  {allPopularVideos.map(each => (
+                    <li key={each.id}>
+                      <Link to={`/movies/${each.id}`} key={each.id}>
+                        <img
+                          src={each.posterPath}
+                          alt={each.title}
+                          className="popular-image"
+                        />
+                      </Link>
+                    </li>
                   ))}
-                </Slider>
-              </ul>
+                </ul>
+              </div>
             )
           }
 
           const renderMovieItem = () => {
-            this.getAllVideos()
+            this.getPopularItemVideos()
           }
 
           const renderFailureView = () => (
@@ -141,8 +106,8 @@ class Trending extends Component {
 
               <button
                 type="button"
-                className="try-again-button"
                 onClick={renderMovieItem}
+                className="try-again-button"
               >
                 Try again
               </button>
@@ -169,4 +134,4 @@ class Trending extends Component {
     )
   }
 }
-export default Trending
+export default PopularItem
